@@ -1,7 +1,8 @@
 <!DOCTYPE html><html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>PRATAMA BLOGSPOT</title><style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRATAMA BLOGSPOT</title><style>
 * {
     box-sizing: border-box;
     margin: 0;
@@ -9,116 +10,110 @@
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f5f5f5;
+    font-family: Arial, sans-serif;
+    background: #f3f3f3;
     color: #111;
 }
 
-/* HEADER */
 header {
     background: #fff;
     border-bottom: 1px solid #ddd;
-    padding: 18px 20px;
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 100;
 }
 
-.header-inner {
+.header {
     max-width: 900px;
     margin: auto;
+    padding: 18px 16px;
 }
 
 .logo {
     font-size: 22px;
     font-weight: 800;
-    letter-spacing: -0.5px;
 }
 
-/* CONTAINER */
 .container {
     max-width: 900px;
-    margin: 25px auto;
+    margin: 22px auto;
     padding: 0 15px;
 }
 
-/* BLOG LIST */
 #blogList {
     display: flex;
     flex-direction: column;
     gap: 14px;
 }
 
-.blog-card {
-    background: #fff;
+.card {
+    background: white;
     border: 1px solid #ddd;
-    border-radius: 12px;
+    border-radius: 14px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform .15s ease, box-shadow .15s ease;
+    transition: .15s;
 }
 
-.blog-card:hover {
+.card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+    box-shadow: 0 6px 20px rgba(0,0,0,.08);
 }
 
-.thumbnail {
+.thumb {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 16/9;
     object-fit: cover;
     display: block;
     background: #ddd;
 }
 
-.card-content {
+.card-body {
     padding: 15px;
 }
 
 .card-title {
     font-size: 19px;
     font-weight: 700;
-    line-height: 1.3;
+    line-height: 1.4;
 }
 
-/* LOADING */
-.loading {
-    text-align: center;
-    padding: 40px 10px;
-    color: #777;
-}
-
-.error {
-    background: #fff;
+.loading,
+.empty {
+    background: white;
     border: 1px solid #ddd;
     border-radius: 12px;
     padding: 25px;
     text-align: center;
-    color: #777;
+    color: #666;
 }
 
-/* DETAIL */
 #detailPage {
     display: none;
 }
 
-.back-button {
-    display: inline-block;
+.back {
     border: 0;
     background: #111;
-    color: #fff;
+    color: white;
     padding: 10px 16px;
-    border-radius: 8px;
+    border-radius: 9px;
     cursor: pointer;
-    font-size: 14px;
-    margin-bottom: 18px;
+    margin-bottom: 15px;
 }
 
 .article {
-    background: #fff;
+    background: white;
     border: 1px solid #ddd;
-    border-radius: 12px;
+    border-radius: 14px;
     overflow: hidden;
+}
+
+.article-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    display: block;
 }
 
 .article-body {
@@ -127,39 +122,18 @@ header {
 
 .article-title {
     font-size: 30px;
-    line-height: 1.2;
+    line-height: 1.25;
     margin-bottom: 20px;
 }
 
-.article-thumbnail {
-    width: 100%;
-    display: block;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    background: #ddd;
-}
-
 .article-text {
-    margin-top: 22px;
     font-size: 17px;
-    line-height: 1.75;
+    line-height: 1.8;
     white-space: pre-wrap;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
 }
 
-/* MOBILE */
-@media (max-width: 600px) {
-    header {
-        padding: 15px;
-    }
-
-    .container {
-        margin-top: 18px;
-    }
-
-    .card-title {
-        font-size: 17px;
-    }
+@media(max-width:600px) {
 
     .article-title {
         font-size: 25px;
@@ -172,36 +146,36 @@ header {
     .article-text {
         font-size: 16px;
     }
+
 }
 </style></head><body><header>
-    <div class="header-inner">
+    <div class="header">
         <div class="logo">PRATAMA BLOGSPOT</div>
     </div>
-</header><main class="container"><!-- HALAMAN LIST -->
-<section id="homePage">
+</header><div class="container"><section id="homePage">
 
     <div id="blogList">
+
         <div class="loading">
             Memuat blog...
         </div>
+
     </div>
 
 </section>
 
 
-<!-- HALAMAN DETAIL -->
 <section id="detailPage">
 
-    <button class="back-button" onclick="showHome()">
+    <button class="back" onclick="goHome()">
         ← Kembali
     </button>
 
     <article class="article">
 
         <img
-            id="detailThumbnail"
-            class="article-thumbnail"
-            src=""
+            id="detailImage"
+            class="article-image"
             alt=""
         >
 
@@ -223,101 +197,233 @@ header {
 
 </section>
 
-</main><script>
+</div><script>
+
+const MAX_BLOG = 1000;
+
+const blogList =
+    document.getElementById("blogList");
+
+const homePage =
+    document.getElementById("homePage");
+
+const detailPage =
+    document.getElementById("detailPage");
+
+const detailTitle =
+    document.getElementById("detailTitle");
+
+const detailImage =
+    document.getElementById("detailImage");
+
+const detailText =
+    document.getElementById("detailText");
+
 
 /*
-=========================================
- PRATAMA BLOGSPOT
-=========================================
+==================================================
+  PENTING
 
-File:
- /index.html
+  Menggunakan lokasi index.html sebagai dasar.
 
-Data:
- /blog/1.json
- /blog/2.json
- /blog/3.json
- dst.
+  Kalau:
 
-JSON:
+  https://domain.com/index.html
 
-{
-    "title": "Judul blog",
-    "thumbnail": "URL YouTube",
-    "text": "Isi blog"
-}
+  maka:
 
-=========================================
+  https://domain.com/blog/1.json
+
+  Kalau:
+
+  https://domain.com/test/index.html
+
+  maka:
+
+  https://domain.com/test/blog/1.json
+==================================================
 */
 
-
-const blogList = document.getElementById("blogList");
-
-const homePage = document.getElementById("homePage");
-const detailPage = document.getElementById("detailPage");
-
-const detailTitle = document.getElementById("detailTitle");
-const detailThumbnail = document.getElementById("detailThumbnail");
-const detailText = document.getElementById("detailText");
+const BASE_URL =
+    new URL("./", window.location.href);
 
 
-// =========================================
-// YOUTUBE THUMBNAIL
-// =========================================
+/*
+==================================================
+ YOUTUBE THUMBNAIL
+==================================================
+*/
 
 function youtubeThumbnail(url) {
 
     if (!url) return "";
 
-    /*
-    Format:
-    https://www.youtube.com/watch?v=VIDEO_ID
-    https://youtu.be/VIDEO_ID
-    https://www.youtube.com/shorts/VIDEO_ID
-    */
-
-    let videoId = null;
-
     try {
 
-        const parsed = new URL(url);
+        const u = new URL(url);
 
-        // youtube.com/watch?v=
-        if (parsed.hostname.includes("youtube.com")) {
+        let id = "";
 
-            videoId = parsed.searchParams.get("v");
+        if (
+            u.hostname === "youtu.be" ||
+            u.hostname === "www.youtu.be"
+        ) {
 
-            // /shorts/VIDEO_ID
-            if (!videoId && parsed.pathname.includes("/shorts/")) {
-                videoId = parsed.pathname.split("/shorts/")[1].split("/")[0];
-            }
+            id =
+                u.pathname
+                .substring(1)
+                .split("/")[0];
 
-            // /embed/VIDEO_ID
-            if (!videoId && parsed.pathname.includes("/embed/")) {
-                videoId = parsed.pathname.split("/embed/")[1].split("/")[0];
-            }
         }
 
-        // youtu.be/VIDEO_ID
-        if (parsed.hostname === "youtu.be") {
-            videoId = parsed.pathname.substring(1).split("/")[0];
+        else if (
+            u.hostname.includes("youtube.com")
+        ) {
+
+            id =
+                u.searchParams.get("v") || "";
+
+            if (
+                !id &&
+                u.pathname.includes("/shorts/")
+            ) {
+
+                id =
+                    u.pathname
+                    .split("/shorts/")[1]
+                    .split("/")[0];
+
+            }
+
+            if (
+                !id &&
+                u.pathname.includes("/embed/")
+            ) {
+
+                id =
+                    u.pathname
+                    .split("/embed/")[1]
+                    .split("/")[0];
+
+            }
+
         }
 
-    } catch (e) {
-        return url;
-    }
+        if (id) {
 
-    if (videoId) {
-        return "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg";
+            return (
+                "https://i.ytimg.com/vi/" +
+                id +
+                "/hqdefault.jpg"
+            );
+
+        }
+
+    } catch(e) {
+
+        console.log("Thumbnail error:", e);
+
     }
 
     return url;
 }
 
 
-// =========================================
-// LOAD BLOG
-// =========================================
+/*
+==================================================
+ LOAD JSON
+==================================================
+*/
+
+async function loadBlog(number) {
+
+    const url =
+        new URL(
+            "./blog/" + number + ".json",
+            BASE_URL
+        ).href;
+
+    console.log(
+        "Mencoba load:",
+        url
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                url + "?v=" + Date.now(),
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        console.log(
+            number + ".json status:",
+            response.status
+        );
+
+
+        if (!response.ok) {
+
+            return null;
+
+        }
+
+
+        const text =
+            await response.text();
+
+
+        console.log(
+            number + ".json:",
+            text
+        );
+
+
+        const data =
+            JSON.parse(text);
+
+
+        return {
+
+            number: number,
+
+            title:
+                data.title || "Tanpa Judul",
+
+            thumbnail:
+                data.thumbnail || "",
+
+            text:
+                data.text || ""
+
+        };
+
+
+    } catch(error) {
+
+        console.error(
+            "Gagal load " +
+            number +
+            ".json:",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+/*
+==================================================
+ LOAD SEMUA BLOG
+==================================================
+*/
 
 async function loadBlogs() {
 
@@ -327,167 +433,175 @@ async function loadBlogs() {
         </div>
     `;
 
+
     const blogs = [];
 
-    let number = 1;
 
     /*
-    Terus mencari:
+    Cek 1 sampai 1000.
 
-    1.json
-    2.json
-    3.json
-    ...
-
-    Kalau file tidak ditemukan,
-    pencarian dihentikan.
+    Tidak berhenti kalau nomor tertentu
+    tidak ada.
     */
 
-    while (true) {
+    for (
+        let i = 1;
+        i <= MAX_BLOG;
+        i++
+    ) {
 
-        try {
+        const blog =
+            await loadBlog(i);
 
-            const response = await fetch(
-                "/blog/" + number + ".json",
-                {
-                    cache: "no-store"
-                }
-            );
 
-            if (!response.ok) {
-                break;
-            }
+        if (blog) {
 
-            const data = await response.json();
-
-            blogs.push({
-                number: number,
-                title: data.title || "Tanpa Judul",
-                thumbnail: data.thumbnail || "",
-                text: data.text || ""
-            });
-
-            number++;
-
-        } catch (error) {
-
-            break;
+            blogs.push(blog);
 
         }
 
     }
 
 
-    // Tidak ada blog
+    /*
+    TERBESAR DI ATAS
+    */
+
+    blogs.sort(
+        (a, b) =>
+            b.number - a.number
+    );
+
+
     if (blogs.length === 0) {
 
         blogList.innerHTML = `
-            <div class="error">
-                Belum ada blog.
+
+            <div class="empty">
+
+                <b>Tidak ada blog ditemukan.</b>
+
+                <br><br>
+
+                Pastikan struktur:
+
+                <br><br>
+
+                <b>index.html</b>
+                <br>
+                <b>blog/1.json</b>
+
             </div>
+
         `;
 
         return;
+
     }
-
-
-    /*
-    Nomor terbesar ditaruh paling atas.
-
-    Contoh:
-
-    1
-    2
-    3
-
-    menjadi:
-
-    3
-    2
-    1
-    */
-
-    blogs.reverse();
 
 
     blogList.innerHTML = "";
 
 
-    // =====================================
-    // BUAT CARD
-    // =====================================
+    for (const blog of blogs) {
 
-    blogs.forEach(blog => {
+        const card =
+            document.createElement("div");
 
-        const card = document.createElement("div");
 
-        card.className = "blog-card";
+        card.className =
+            "card";
 
-        const thumbnail = youtubeThumbnail(
-            blog.thumbnail
-        );
+
+        const image =
+            youtubeThumbnail(
+                blog.thumbnail
+            );
+
 
         card.innerHTML = `
-            <img
-                class="thumbnail"
-                src="${escapeHTML(thumbnail)}"
-                alt=""
-                loading="lazy"
-                onerror="this.style.display='none'"
-            >
 
-            <div class="card-content">
+            ${
+                image
+                ?
+                `
+                <img
+                    class="thumb"
+                    src="${escapeHTML(image)}"
+                    alt=""
+                    loading="lazy"
+                >
+                `
+                :
+                ""
+            }
+
+            <div class="card-body">
 
                 <div class="card-title">
                     ${escapeHTML(blog.title)}
                 </div>
 
             </div>
+
         `;
 
 
-        card.onclick = function() {
-
-            openBlog(blog);
-
-        };
+        card.onclick =
+            () => openBlog(blog);
 
 
         blogList.appendChild(card);
 
-    });
+    }
 
 }
 
 
-// =========================================
-// OPEN BLOG
-// =========================================
+/*
+==================================================
+ DETAIL BLOG
+==================================================
+*/
 
 function openBlog(blog) {
 
-    homePage.style.display = "none";
+    homePage.style.display =
+        "none";
 
-    detailPage.style.display = "block";
-
-    detailTitle.textContent = blog.title;
-
-    detailText.textContent = blog.text;
+    detailPage.style.display =
+        "block";
 
 
-    const thumbnail = youtubeThumbnail(
-        blog.thumbnail
-    );
-
-    detailThumbnail.src = thumbnail;
-
-    detailThumbnail.style.display = thumbnail
-        ? "block"
-        : "none";
+    detailTitle.textContent =
+        blog.title;
 
 
-    // URL menjadi:
-    // /?blog=3
+    detailText.textContent =
+        blog.text;
+
+
+    const image =
+        youtubeThumbnail(
+            blog.thumbnail
+        );
+
+
+    if (image) {
+
+        detailImage.src =
+            image;
+
+        detailImage.style.display =
+            "block";
+
+    } else {
+
+        detailImage.style.display =
+            "none";
+
+    }
+
 
     history.pushState(
         {},
@@ -495,23 +609,29 @@ function openBlog(blog) {
         "?blog=" + blog.number
     );
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+
+    window.scrollTo(
+        0,
+        0
+    );
 
 }
 
 
-// =========================================
-// KEMBALI
-// =========================================
+/*
+==================================================
+ KEMBALI
+==================================================
+*/
 
-function showHome() {
+function goHome() {
 
-    detailPage.style.display = "none";
+    detailPage.style.display =
+        "none";
 
-    homePage.style.display = "block";
+    homePage.style.display =
+        "block";
+
 
     history.pushState(
         {},
@@ -519,165 +639,77 @@ function showHome() {
         window.location.pathname
     );
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+
+    window.scrollTo(
+        0,
+        0
+    );
 
 }
 
 
-// =========================================
-// ESCAPE HTML
-// =========================================
+/*
+==================================================
+ ESCAPE
+==================================================
+*/
 
-function escapeHTML(text) {
+function escapeHTML(value) {
 
-    const div = document.createElement("div");
+    const div =
+        document.createElement("div");
 
-    div.textContent = text;
+    div.textContent =
+        String(value);
 
     return div.innerHTML;
 
 }
 
 
-// =========================================
-// BUKA BLOG DARI URL
-// =========================================
+/*
+==================================================
+ BUKA DARI URL
+==================================================
+*/
 
-async function openFromURL() {
+async function start() {
 
-    const params = new URLSearchParams(
-        window.location.search
-    );
-
-    const blogNumber = params.get("blog");
-
-    if (!blogNumber) {
-
-        await loadBlogs();
-
-        return;
-
-    }
-
-
-    if (!/^\d+$/.test(blogNumber)) {
-
-        await loadBlogs();
-
-        return;
-
-    }
-
-
-    try {
-
-        const response = await fetch(
-            "/blog/" + blogNumber + ".json",
-            {
-                cache: "no-store"
-            }
+    const params =
+        new URLSearchParams(
+            window.location.search
         );
 
-        if (!response.ok) {
 
-            await loadBlogs();
+    const number =
+        params.get("blog");
+
+
+    if (number) {
+
+        const blog =
+            await loadBlog(
+                Number(number)
+            );
+
+
+        if (blog) {
+
+            openBlog(blog);
 
             return;
 
         }
 
-        const data = await response.json();
-
-        const blog = {
-
-            number: Number(blogNumber),
-
-            title: data.title || "Tanpa Judul",
-
-            thumbnail: data.thumbnail || "",
-
-            text: data.text || ""
-
-        };
-
-
-        openBlog(blog);
-
-
-    } catch (error) {
-
-        await loadBlogs();
-
     }
+
+
+    await loadBlogs();
 
 }
 
 
-// =========================================
-// BROWSER BACK/FORWARD
-// =========================================
-
-window.addEventListener(
-    "popstate",
-    function() {
-
-        const params = new URLSearchParams(
-            window.location.search
-        );
-
-        const blogNumber = params.get("blog");
-
-
-        if (blogNumber) {
-
-            fetch(
-                "/blog/" + blogNumber + ".json",
-                {
-                    cache: "no-store"
-                }
-            )
-            .then(response => response.json())
-            .then(data => {
-
-                openBlog({
-
-                    number: Number(blogNumber),
-
-                    title: data.title || "Tanpa Judul",
-
-                    thumbnail: data.thumbnail || "",
-
-                    text: data.text || ""
-
-                });
-
-            })
-            .catch(() => {
-
-                showHome();
-
-            });
-
-        } else {
-
-            detailPage.style.display = "none";
-
-            homePage.style.display = "block";
-
-            loadBlogs();
-
-        }
-
-    }
-);
-
-
-// START
-
-openFromURL();
+start();
 
 </script></body>
-</html>
+    </html>
