@@ -1,0 +1,30 @@
+{
+  "cleanUrls": true,
+
+  "rewrites": [
+    {
+      "source": "/gpserver/:path*",
+      "destination": "/api/gpserver?path=:path*"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ],
+
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Link",
+          "value": "</logo.png>; rel=icon; type=image/png"
+        }
+      ]
+    }
+  ]
+}
